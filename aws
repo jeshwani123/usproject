@@ -1,0 +1,251 @@
+✅ WEEK-12 – AWS Deployment Lab
+1. DEPLOYMENT OF index.html USING EC2 INSTANCE
+Step 1: Log in to AWS Academy
+
+Open the AWS Academy course invitation email → Click Start
+
+Sign in using student credentials
+
+Click Modules
+
+Scroll → Select Launch AWS Academy Lab – Learner Lab
+
+Click Start Lab
+
+Wait until the AWS button turns Green
+
+Click on AWS to open the console
+
+Step 2: Create an EC2 Instance
+
+Search EC2 → Open
+
+Click Launch Instance
+
+Stage 1 – Instance Name
+
+Enter name: ubuntu
+
+Stage 2 – Select AMI
+
+Choose: Ubuntu Server (Free Tier eligible)
+
+Stage 3 – Architecture
+
+Select: 64-bit (x86)
+
+Stage 4 – Instance Type
+
+Choose: t2.micro (1 vCPU, 1 GB RAM – Free Tier)
+
+Stage 5 – Create Key Pair
+
+Click Create new key pair
+
+Give name (ex: MyKey)
+
+Download .pem file
+
+Save in a folder named AWS on Desktop
+
+Stage 6 – Network Settings
+
+Check all required inbound rules:
+
+✔ HTTP (port 80)
+
+✔ HTTPS (port 443)
+
+✔ SSH (port 22)
+
+Stage 7 – Storage
+
+Default 8 GB → Keep as is
+
+Stage 8 – Launch
+
+Click Launch Instance
+
+Step 3: Connect to the Instance
+
+Go to Instances
+
+Wait until both Status Checks (2/2) pass
+
+Select the instance → Click Connect
+
+Copy the SSH command
+
+Step 4: Connect Using PowerShell/Git Bash
+(a) Navigate to the key pair location
+cd <path-to-your-pem-file>
+
+(b) Run SSH command
+
+Example:
+
+ssh -i MyKey.pem ubuntu@<public-ip>
+
+Step 5: Install Required Software
+sudo apt update
+sudo apt-get install docker.io
+sudo apt install git
+sudo apt install nano
+
+Step 6: Create Web Application and Upload to GitHub
+(a) Create index.html on your laptop
+(b) Open Git Bash inside the folder → Run:
+git init
+git add .
+git commit -m "first commit"
+
+(c) Create GitHub Repository
+(d) Push the code
+git branch -M main
+git remote add origin <repo-url>
+git push -u origin main
+
+Step 7: Clone the Repository on EC2
+git clone <repo-url>
+cd <folder-name>
+ls
+
+Step 8: Create Dockerfile on EC2
+nano Dockerfile
+
+
+Paste:
+
+FROM nginx
+COPY . /usr/share/nginx/html
+
+
+Save:
+
+Ctrl + O, Enter
+
+Ctrl + X
+
+Step 9: Build & Run Docker Image
+Build image:
+sudo docker build -t mywebapp .
+
+Run container:
+sudo docker run -d -p 80:80 mywebapp
+
+Step 10: Test the Website
+
+Go to EC2 → Copy Public IPv4 address
+
+Open in browser:
+
+http://<public-ip>
+
+
+You should see your index.html webpage.
+
+Step 11: Stop Container & Terminate Instance
+sudo docker ps
+sudo docker stop <container-id>
+
+
+Then in AWS:
+
+Select instance → Instance State → Terminate
+
+After termination → End Lab
+
+✅ END OF EXERCISE 1
+2. MAVEN WEB PROJECT DEPLOYMENT ON AWS
+
+This is similar but uses a Maven Web App.
+
+Step 1: Start AWS Lab
+
+Start lab → Open AWS console → EC2 → Launch Instance
+
+Same EC2 creation steps as above (Ubuntu, t2.micro, key pair, network settings)
+
+Step 2: Connect to Instance
+
+Connect using SSH
+
+Navigate to PEM file path
+
+Run SSH command
+
+Step 3: Install Required Software
+sudo apt update
+sudo apt install docker.io
+sudo apt install git
+sudo apt install maven
+
+Step 4: Clone Maven Web Project
+
+Go to your GitHub Maven repo
+
+Copy HTTPS URL
+
+On EC2:
+
+git clone <repo-url>
+cd <project-folder>
+
+If the project is in master:
+
+Switch branch to main:
+
+git branch -M main
+git pull
+
+Step 5: Build Docker Image for Maven Web App
+
+Create Dockerfile:
+
+nano Dockerfile
+
+
+Paste:
+
+FROM tomcat:9
+COPY target/*.war /usr/local/tomcat/webapps/
+
+
+Save and exit.
+
+Build image:
+sudo docker build -t mymavenwebapp .
+
+Run container:
+sudo docker run -d -p 9090:8080 mymavenwebapp
+
+Step 6: Configure Security Group
+
+If webpage does not open:
+
+Go to EC2 → Security Groups
+
+Edit inbound rules
+
+Add rule:
+
+Port: 9090
+Source: 0.0.0.0/0
+
+
+Save
+
+Now open:
+
+http://<public-ip>:9090/<your-app-name>
+
+Step 7: Stop and Terminate
+sudo docker ps
+sudo docker stop <container-id>
+
+
+AWS:
+
+Terminate instance
+
+End Lab
