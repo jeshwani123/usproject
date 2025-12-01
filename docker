@@ -1,0 +1,256 @@
+Working with Docker CLI Commands: Redis Example
+Step 1: Pull the Redis Image
+
+Command:
+
+docker pull redis
+
+
+What It Does:
+
+Downloads the latest Redis image from Docker Hub.
+
+Step 2: Run a Redis Container
+
+Command:
+
+docker run --name my-redis -d redis
+
+
+What It Does:
+
+Creates and starts a container named my-redis from the Redis image.
+
+-d runs the container in detached mode (background).
+
+Step 3: Check Running Containers
+
+Command:
+
+docker ps
+
+
+What It Does:
+
+Lists all the currently running containers.
+
+Step 4: Access Redis Using redis-cli
+
+Command:
+
+docker exec -it my-redis redis-cli
+
+
+What It Does:
+
+Opens an interactive Redis CLI terminal inside the container.
+
+Example Redis Commands
+127.0.0.1:6379> SET name "Alice"
+OK
+127.0.0.1:6379> GET name
+"Alice"
+127.0.0.1:6379> exit   // exit redis-cli
+
+Step 5: Stop the Redis Container
+
+Command:
+
+docker stop my-redis
+
+
+What It Does:
+
+Stops the running container (but does NOT delete it).
+
+Step 6: Restart the Redis Container
+
+Command:
+
+docker start my-redis
+
+
+What It Does:
+
+Starts the previously stopped container.
+
+Step 7: Remove the Redis Container
+
+Command:
+
+docker rm my-redis
+
+
+Note:
+You must stop the container before removing it.
+
+What It Does:
+
+Permanently deletes the container.
+
+Step 8: Remove the Redis Image
+
+Command:
+
+docker rmi redis
+
+
+What It Does:
+
+Removes the Redis image from your local machine.
+  2. Working with Dockerfile
+
+A Dockerfile is a simple text file containing instructions to build a custom Docker image.
+
+Step 1: Set Up Your Folder
+Windows
+
+Create a folder:
+C:\DockerProjects\Redis
+
+Open Git Bash and navigate to it:
+
+cd /c/DockerProjects/Redis
+
+Mac/Linux
+mkdir ~/DockerProjects/Redis
+cd ~/DockerProjects/Redis
+
+Step 2: Create and Write the Dockerfile
+
+Inside the folder, create a file named Dockerfile (no extension).
+
+Add the following instructions:
+
+FROM redis:latest
+CMD ["redis-server"]
+
+
+What It Does:
+
+FROM redis:latest → Uses the latest Redis image as the base.
+
+CMD ["redis-server"] → Runs Redis automatically when the container starts.
+
+Docker Commands (Step-by-Step)
+1. Build the Custom Image
+docker build -t redisnew .
+
+
+What It Does:
+
+Builds a Docker image using the Dockerfile in the current folder (.).
+
+Tags the image with the name redisnew.
+
+2. Run a Container Using the Custom Image
+docker run --name myredisnew -d redisnew
+
+
+What It Does:
+
+Starts a container named myredisnew using the image redisnew.
+
+Runs in background mode (-d).
+
+3. List Running Containers
+docker ps
+
+
+Shows all running containers.
+
+4. Stop the Container
+docker stop myredisnew
+
+
+Stops the container named myredisnew.
+
+5. Login to Docker Hub
+docker login
+
+
+Logs in to your Docker Hub account.
+
+6. List All Containers (Running + Stopped)
+docker ps -a
+
+7. Commit Container as a New Image
+docker commit 0e993d2009a1 budarajumadhurika/redis1
+
+
+(0e993d2009a1 is container ID of myredisnew)
+
+What It Does:
+
+Saves the current state of the container as a new image named
+budarajumadhurika/redis1
+
+8. List All Images
+docker images
+
+
+Shows all images stored on your system.
+
+9. Push Image to Docker Hub
+docker push budarajumadhurika/redis1
+
+
+Uploads the image to your Docker Hub account.
+
+10. Remove Container
+docker rm 0e993d2009a1
+
+
+Deletes the container (must be stopped).
+
+11. Remove the Image
+docker rmi budarajumadhurika/redis1
+
+
+Deletes the image from your local machine.
+
+12. Verify Containers Again
+docker ps -a
+
+13. Logout from Docker Hub
+docker logout
+
+14. Pull the Uploaded Image from Docker Hub
+docker pull budarajumadhurika/redis1
+
+15. Run a New Container from Pulled Image
+docker run --name myredis -d budarajumadhurika/redis1
+
+16. Access Redis CLI Inside Container
+docker exec -it myredis redis-cli
+
+17. Set a Key in Redis
+SET name "Abcdef"
+
+18. Get a Key
+GET name
+
+19. Exit Redis CLI
+exit
+
+20. Check All Containers
+docker ps -a
+
+21. Stop Running Container
+docker stop myredis
+
+22. Remove the Container
+docker rm 50a6e4a9c326
+
+23. List Images Again
+docker images
+
+24. Remove the Image Again
+docker rmi budarajumadhurika/redis1
+
+Step 3: Remove Login Credentials (Optional)
+docker logout
+
+
+What It Does:
+Logs you out of Docker Hub and clears stored credentials.
