@@ -1,0 +1,272 @@
+Docker Compose – Complete Lab Notes (Exam Ready)
+1. Define and Run Multiple Interdependent Services
+Folder Setup
+
+Create a folder:
+
+compose-lab
+
+
+Inside it, create docker-compose.yml:
+
+version: "3.9"
+
+services:
+  web:
+    image: nginx:latest
+    ports:
+      - "8080:80"
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: demo
+      POSTGRES_PASSWORD: demo
+      POSTGRES_DB: demo_db
+
+Run the Setup
+docker compose up -d
+
+Test in Browser
+
+Open:
+
+http://localhost:8080
+
+Expected Output
+
+Nginx welcome page appears
+
+Postgres (db) container runs in background
+
+2. Write and Interpret docker-compose.yml Files
+Add Redis Service
+
+Add inside services: section:
+
+  redis:
+    image: redis:alpine
+
+Make Web Dependent on Redis
+
+Modify web service:
+
+  web:
+    image: nginx:latest
+    ports:
+      - "8080:80"
+    depends_on:
+      - redis
+
+Restart the setup
+docker compose up -d
+docker compose ps
+
+Expected Output
+
+Running services:
+
+web
+
+db
+
+redis
+
+3. Deploy Across Different Machines
+Steps
+
+Zip the compose-lab folder
+
+Copy it to another machine with Docker Compose installed
+
+Run:
+
+docker compose up -d
+
+Expected Output
+
+Same services run exactly the same
+
+No code changes required
+
+Reason: Docker Compose ensures environment consistency.
+
+4. Networking and Persistent Storage
+Add Custom Network + Volume
+
+Update docker-compose.yml:
+
+version: "3.9"
+
+networks:
+  app-net:
+
+volumes:
+  db-data:
+
+services:
+  web:
+    image: nginx:latest
+    ports:
+      - "8080:80"
+    networks:
+      - app-net
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: demo
+      POSTGRES_PASSWORD: demo
+      POSTGRES_DB: demo_db
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - app-net
+
+Run
+docker compose up -d
+
+Insert Data into Postgres
+Option 1: Using psql inside container
+
+Ensure containers are running
+
+docker compose up -d
+
+
+Enter Postgres:
+
+docker exec -it compose-lab-db-1 psql -U demo -d demo_db
+
+
+Create table + insert data:
+
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50),
+    email VARCHAR(100)
+);
+
+INSERT INTO users (name, email) VALUES
+('Alice', 'alice@example.com'),
+('Bob', 'bob@example.com');
+
+
+Verify:
+
+SELECT * FROM users;
+
+Bring Containers Down
+docker compose down
+
+Start Again
+docker compose up -d
+
+Expected Output
+
+PostgreSQL data persists because of the db-data volume
+
+All services communicate through app-net
+
+Service discovery works using service names
+
+5. Faster Iteration During Development (Flask App)
+Create app.py
+from flask import Flask
+app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return "Hello from Flask + Docker!"
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
+
+Create Dockerfile
+FROM python:3.10-slim
+WORKDIR /app
+COPY app.py /app/
+RUN pip install flask
+CMD ["python", "app.py"]
+
+Update docker-compose.yml
+
+Add/modify:
+
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+
+Run
+docker compose up --build
+
+
+Visit:
+
+http://localhost:5000
+
+Make Changes
+
+Change text inside app.py, for example:
+
+return "Hello Docker Compose!"
+
+
+Then rebuild:
+
+docker compose up --build
+
+Expected Output
+
+Browser now shows updated text
+
+Faster development workflow
+
+✅ BONUS: Scaling Containers
+Scaling a Service
+docker compose up --scale web=2 -d
+
+
+⚠️ Note
+You cannot bind the same port for multiple scaled containers.
+To run multiple Nginx containers with different ports:
+
+version: "3.9"
+
+services:
+  web1:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+
+  web2:
+    image: nginx:alpine
+    ports:
+      - "8081:80"
+
+
+Run:
+
+docker compose up -d
+
+
+Visit:
+
+http://localhost:8080 → web1
+
+http://localhost:8081 → web2
+
+✔ All Tasks Covered
+
+You now have complete notes for:
+
+1️⃣ Multi-service setup
+2️⃣ Compose file interpretation
+3️⃣ Deployment on other machines
+4️⃣ Networking + persistent storage
+5️⃣ Development workflow with Flask
