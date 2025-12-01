@@ -1,0 +1,222 @@
+✅ Minikube Installation Steps (Windows)
+Step 1: Install Prerequisites
+1. Virtualization Support
+
+Ensure virtualization is enabled in BIOS.
+
+Verify in Windows:
+
+systeminfo
+
+
+Look for: Virtualization Enabled: Yes
+
+2. Install a Hypervisor
+
+Minikube requires a driver/hypervisor:
+
+Hyper-V
+(Available in Windows 10/11 Pro/Enterprise)
+
+OR Docker Desktop
+(Can be used as --driver=docker)
+
+OR VirtualBox
+
+Step 2: Download Minikube
+
+Open PowerShell or CMD as Administrator
+
+Run:
+
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-installer.exe
+
+
+Install Minikube:
+
+.\minikube-installer.exe
+
+Step 3: Add Minikube to PATH (If Needed)
+
+Open System Properties → Environment Variables
+
+Edit PATH
+
+Add:
+
+C:\Program Files\Minikube
+
+Step 4: Start Minikube
+
+Open CMD/PowerShell and run:
+
+Start with your preferred driver
+
+Hyper-V
+
+"minikube start --driver=hyperv"
+
+
+Docker
+
+minikube start --driver=docker
+
+Verify cluster status
+minikube status
+
+Step 5: Interact with Minikube (kubectl)
+
+kubectl is the Kubernetes command-line tool.
+
+Use kubectl provided by Minikube
+"minikube kubectl -- get pods -A"
+
+Optional: Minikube Dashboard
+"minikube dashboard"
+
+Optional: Verify Installation
+minikube version
+"kubectl version --client"
+
+Troubleshooting
+
+If Minikube fails to start:
+
+"minikube logs"
+
+
+Ensure Hyper-V/Docker/VirtualBox is installed and running.
+
+Update Minikube:
+
+"minikube update-check
+minikube update"
+
+✅ Minikube Automation: Deployment Steps
+Step 1: Start Minikube Cluster
+"minikube start"
+
+Step 2: Create and Manage Deployment
+Create Nginx deployment
+"kubectl create deployment mynginx --image=nginx"
+
+If deployment exists, update image
+"kubectl set image deployment/mynginx nginx=nginx:latest"
+
+Verify deployment
+"kubectl get deployments
+kubectl get pods
+kubectl describe pods"
+
+Step 3: Expose Deployment as a Service
+"kubectl expose deployment mynginx --type=NodePort --port=80 --target-port=80"
+
+Step 4: Scale Deployment
+"kubectl scale deployment mynginx --replicas=4
+kubectl get service mynginx"
+
+Step 5: Access NGINX Application
+Option 1: Port Forwarding
+"kubectl port-forward svc/mynginx 8081:80"
+
+
+Open in browser:
+
+http://localhost:8081
+
+Option 2: Minikube Tunnel (If port-forward fails)
+"minikube tunnel"
+
+
+Retrieve service URL:
+
+"minikube service mynginx --url"
+
+Open Kubernetes Dashboard
+"minikube dashboard"
+
+Step 6: Stop and Clean Up
+Delete Deployment & Service
+"kubectl delete deployment mynginx
+kubectl delete service mynginx"
+
+Stop Minikube
+"minikube stop"
+
+Delete Minikube Cluster
+"minikube delete"
+
+✅ Nagios Automation Using Docker
+Step 1: Pull Nagios Image
+"docker pull jasonrivers/nagios:latest"
+
+Step 2: Run Nagios Container
+"docker run --name nagiosdemo -p 8888:80 jasonrivers/nagios:latest"
+
+Step 3: Access Nagios Dashboard
+
+Open:
+
+http://localhost:8888
+
+Login Credentials
+
+Username: nagiosadmin
+
+Password: nagios
+
+Dashboard Sections
+
+Hosts
+
+Services
+
+Alerts
+
+Step 4: Host Monitoring Details
+
+Inside Nagios:
+
+Key Information:
+
+Host Status: UP/DOWN
+
+CPU / Memory / Network metrics
+
+Actions: Disable notifications, schedule downtime, etc.
+
+Step 5: Stop and Remove Nagios
+Stop container
+"docker stop nagiosdemo"
+
+Remove container
+"docker rm nagiosdemo"
+
+Remove image (optional)
+docker images
+docker rmi jasonrivers/nagios:latest
+
+⭐ AWS Free-Tier Account Creation Steps
+
+Open:
+
+https://aws.amazon.com
+
+
+Click Create AWS Account
+
+Enter email ID and name
+
+Enter verification code received by email
+
+Fill contact details, accept Terms → Click Create
+
+Add billing details → Click Verify and Continue
+
+₹2 is charged for card verification (refunded later)
+
+Add mobile number, select country → Click Send SMS
+
+Enter OTP received on mobile
+
+Select Basic Plan (Free Tier) → Click Complete Sign Up
